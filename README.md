@@ -5,7 +5,9 @@ ZNC cmd notify  is a module for [ZNC][] that will send notifications to a comman
 can customize to invoke any action you want (Forward email/SMS messages) for any private 
 message or channel highlight that matches a configurable set of conditions.
 
-This project is froked from ZNC to Notifo created by [John Reese](http://johnmreese.com).
+This project is forked from ZNC to Notifo created by [John Reese](http://johnmreese.com).
+
+Minor edits made by Benwa.
 
 
 Compiling

@@ -88,7 +88,7 @@ class CNotifoMod : public CModule
 			defaults["away_only"] = "no";
 #endif
 			defaults["client_count_less_than"] = "1";
-			defaults["highlight"] = "";
+			defaults["highlight"] = "benwa";
 			defaults["idle"] = "0";
 			defaults["last_active"] = "0";
 			defaults["last_notification"] = "0";

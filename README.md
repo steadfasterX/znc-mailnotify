@@ -32,9 +32,9 @@ Installation
 Create the notify script at /etc/notify.sh that takes
 in a message as parameters. Example:
 
-#!/bin/bash
-echo "$@" | mail ...@msg.telus.com
-EOF
+    #!/bin/bash
+    echo "$@" | mail ...@msg.telus.com
+    EOF
     
 Copy the compiled module into your ZNC profile:
 

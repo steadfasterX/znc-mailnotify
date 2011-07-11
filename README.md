@@ -1,23 +1,11 @@
-ZNC to Notifo
+ZNC cmd notify
 =============
 
-ZNC to Notifo is a module for [ZNC][] that will send notifications to a [Notifo][] account
-for any private message or channel highlight that matches a configurable set of conditions.
+ZNC cmd notify  is a module for [ZNC][] that will send notifications to a command that you
+can customize to invoke any action you want (Forward email/SMS messages) for any private 
+message or channel highlight that matches a configurable set of conditions.
 
-This project is still a Work In Progress, but should be functional enough and stable enough
-for everyday usage.  Users are more than welcome to submit feature requests or patches for
-discussion or inclusion.  Bug reports and feature requests can be submitted to
-[my bug tracker][mantis] by selecting the "ZNC to Notifo" project from the top right, or
-sent via email.
-
-For full functionality, this module requires ZNC version 0.090 or newer, but should compile
-and run with a reduced feature set on versions as old as 0.078, the current version used by
-Ubuntu.  However, development and testing is done exclusively against the latest source
-distribution, so feedback on older releases of ZNC is needed to continue supporting them.
-
-ZNC to Notifo was created by [John Reese](http://johnmreese.com) and designed to fill a
-personal need.  It may not fit your use cases, but any and all feedback would be greatly
-appreciated.
+This project is froked from ZNC to Notifo created by [John Reese](http://johnmreese.com).
 
 
 Compiling
@@ -35,31 +23,26 @@ If you have `make` installed, you can compile the module with:
 
 Otherwise, run the full command:
 
-    $ znc-build notifo.cpp
+    $ znc-build cmdnotify.cpp
 
 
 Installation
 ------------
 
+Create the notify script at /etc/notify.sh that takes
+in a message as parameters. Example:
+
+#!/bin/bash
+echo "$@" | mail ...@msg.telus.com
+EOF
+    
 Copy the compiled module into your ZNC profile:
 
-    $ cp notifo.so ~/.znc/modules/
+    $ cp cmdnotify.so ~/.znc/modules/
 
 Now, load the module in ZNC:
 
-    /msg *status loadmod notifo
-
-Then set your Notifo username and API secret.  The API secret is not your password, and
-can be obtained by logging into Notifo's website, clicking Settings, and then "Click to
-Show" next to the "API Secret" heading:
-
-    /msg *notifo set username foo
-	/msg *notifo set secret ...
-
-At this point, it should start sending notifications every time you get a private message
-or someone says your name in a channel.  If this is everything you wanted, congratulations,
-you're done!
-
+    /msg *status loadmod cmdnotify
 
 Commands
 --------
@@ -118,7 +101,7 @@ Configuration
     This condition requires version 0.090 of ZNC to operate, and will be disabled when
     compiled against older versions.
 
-*   `client_count_less_than = 0`
+*   `client_count_less_than = 1`
 
     Notifications will only be sent if the number of connected IRC clients is less than this
     value.  A value of 0 (zero) will disable this condition.
@@ -154,7 +137,7 @@ Configuration
     including joins, parts, messages, and actions.  Notifications will only be sent if the
     elapsed time is greater than this value.  A value of 0 (zero) will disable this condition.
 
-*   `last_active = 180`
+*   `last_active = 0`
 
     Time in seconds since the last message sent by the user on that channel or query window.
     Notifications will only be sent if the elapsed time is greater than this value.  A value
@@ -164,7 +147,7 @@ Configuration
     window separately, so a recent PM to Joe will not affect a notification sent from
     channel #foo.
 
-*   `last_notification = 300`
+*   `last_notification = 0`
 
     Time in seconds since the last notification sent from that channel or query window.
     Notifications will only be sent if the elapsed time is greater than this value.  A value
@@ -185,7 +168,7 @@ Configuration
     like "channelbot", "FooBot", or "Robot".  Care must be used to not accidentally
     blacklist legitimate nicks with wildcards.
 
-*   `replied = "yes"`
+*   `replied = "no"`
 
     If set to "yes", notifications will only be sent if you have replied to the channel or
     query window more recently than the last time a notification was sent for that context.
@@ -193,27 +176,11 @@ Configuration
 
 ### Notifications
 
-*   `message_length = 100`
+*   `message_length = 1024`
 
     Maximum length of the notification message to be sent.  The message will be nicely
     truncated and ellipsized at or before this length is reached.  A value of 0 (zero) will
     disable this option.
-
-*   `message_url = ""`
-
-    URI that will be sent with the notification to Notifo.  This could be a web address or a
-    local scheme to access a mobile application.  Keyword expansion is performed on this
-    value each time a notification is sent; the following keywords will be replaced with
-    the appropriate value:
-
-    *   `{context}`: the channel or query window context
-    *   `{nick}`: the nick that sent the message
-    *   `{datetime}`: [ISO 8601][] date string, in server-local time
-    *   `{unixtime}`: unix-style integer timestamp
-
-    As an example, a value of "http://domain/{context}/{datetime}" would be expanded to
-    something similar to "http://domain/#channel/2011-03-09 14:25:09", or
-    "http://domain/{nick}/{unixtime}" to "http://domain/somenick/1299685136".
 
 ### Advanced
 
@@ -265,7 +232,6 @@ This project is licensed under the MIT license.  See the `LICENSE` file for deta
 
 
 [mantis]: http://leetcode.net/mantis
-[Notifo]: http://notifo.com "Notifo, Mobile Notifications for Everything"
 [ZNC]: http://en.znc.in "ZNC, an advanced IRC bouncer"
 [ISO 8601]: http://en.wikipedia.org/wiki/ISO_8601 "ISO 8601 Date Format"
 

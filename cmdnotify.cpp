@@ -87,16 +87,16 @@ class CNotifoMod : public CModule
 #ifdef NOTIFO_AWAY
 			defaults["away_only"] = "no";
 #endif
-			defaults["client_count_less_than"] = "0";
+			defaults["client_count_less_than"] = "1";
 			defaults["highlight"] = "";
 			defaults["idle"] = "0";
-			defaults["last_active"] = "180";
-			defaults["last_notification"] = "300";
+			defaults["last_active"] = "0";
+			defaults["last_notification"] = "0";
 			defaults["nick_blacklist"] = "";
-			defaults["replied"] = "yes";
+			defaults["replied"] = "no";
 
 			// Notification settings
-			defaults["message_length"] = "100";
+			defaults["message_length"] = "1024";
 			defaults["message_uri"] = "";
 		}
 		virtual ~CNotifoMod() {}
@@ -144,7 +144,7 @@ class CNotifoMod : public CModule
 		 * @param title Message title to use
 		 * @param context Channel or nick context
 		 */
-		void send_message(const CString& message, const CString& title="New Message", const CString& context="*notifo", const CNick& nick=CString("*notifo"))
+		bool send_message(const CString& message, const CString& title="New Message", const CString& context="*notifo", const CNick& nick=CString("*notifo"))
 		{
 			// Set the last notification time
 			last_notification_time[context] = time(NULL);
@@ -165,11 +165,24 @@ class CNotifoMod : public CModule
 			char iso8601 [20];
 			strftime(iso8601, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
 
-			CString cmd = "znc-notify-cmd.sh " + message;
-			int r = system(cmd.c_str());
-			if (r != 0) {
-				printf("Failure\n");
+			CString cmd = message;
+			int pid;
+			pid = fork();
+
+			if(pid < 0) /* process creation failed */
+			{
+				return false;
 			}
+			else if(pid == 0) /* child executes this */
+			{
+				execl("/bin/bash", "-c", "/etc/notify.sh", cmd.c_str(), NULL); /* tells the child to stop executing this code */
+				PutIRC("PRIVMSG " + nick.GetNick() + " : Send fail.");
+				exit(0);
+				/* and start executing pidgin..or w/e you want*/
+			}
+			else /* parent executes this */
+			{  }
+			return true;  
 		}
 
 		/**
@@ -598,7 +611,13 @@ class CNotifoMod : public CModule
 				CString msg = "From " + nick.GetNick();
 				msg += ": " + message;
 
-				send_message(msg, title, nick.GetNick());
+				bool sent = send_message(msg, title, nick.GetNick());
+
+				if (sent) {
+					PutIRC("PRIVMSG " + nick.GetNick() + " : Sms message sent. Delay is approx. 5 mins.");
+				} else {
+					PutIRC("PRIVMSG " + nick.GetNick() + " : Sms message failed to send.");
+				}
 			}
 
 			return CONTINUE;
@@ -612,16 +631,7 @@ class CNotifoMod : public CModule
 		 */
 		EModRet OnPrivAction(CNick& nick, CString& message)
 		{
-			if (notify_pm(nick, message))
-			{
-				CString title = "Private Message";
-				CString msg = "* " + nick.GetNick();
-				msg += " " + message;
-
-				send_message(msg, title, nick.GetNick());
-			}
-
-			return CONTINUE;
+			return OnPrivMsg(nick, message);
 		}
 
 		/**

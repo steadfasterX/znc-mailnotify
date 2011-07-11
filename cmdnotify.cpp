@@ -1,14 +1,12 @@
 /**
- * ZNC Notifo Module
+ * ZNC Cmd Notify
  *
- * Allows the user to enter a Notifo user and API token, and sends
- * channel highlights and personal messages to Notifo.
+ * Fowards a notify to a command of your choice
  *
+ * Forked credits:
  * Copyright (c) 2011 John Reese
  * Licensed under the MIT license
  */
-
-#define REQUIRESSL
 
 #include "znc.h"
 #include "Chan.h"
@@ -37,19 +35,11 @@
 class CNotifoMod : public CModule
 {
 	protected:
-
 		// Application name
 		CString app;
 
 		// Too lazy to add CString("\r\n\") everywhere
 		CString crlf;
-
-		// BASIC auth string, needs to be encoded each time username/secret is changed
-		CString notifo_auth;
-
-		// Host and URL to send messages to
-		CString notifo_host;
-		CString notifo_url;
 
 		// User agent to use
 		CString user_agent;
@@ -80,9 +70,6 @@ class CNotifoMod : public CModule
 			crlf = "\r\n";
 
 			idle_time = time(NULL);
-			notifo_auth = "";
-			notifo_host = "api.notifo.com";
-			notifo_url = "/v1/send_notification";
 			user_agent = "ZNC To Notifo";
 
 			// Current user
@@ -125,16 +112,6 @@ class CNotifoMod : public CModule
 		CString urlencode(const CString& str)
 		{
 			return str.Escape_n(CString::EASCII, CString::EURL);
-		}
-
-		/**
-		 * Re-encode the authentication credentials.
-		 */
-		void authencode()
-		{
-			// BASIC auth, base64-encoded username:password
-			CString auth = options["username"] + CString(":") + options["secret"];
-			notifo_auth = auth.Base64Encode_n();
 		}
 
 		/**
@@ -188,37 +165,11 @@ class CNotifoMod : public CModule
 			char iso8601 [20];
 			strftime(iso8601, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
 
-			// URI string replacements
-			MCString replace;
-			replace["{context}"] = context;
-			replace["{nick}"] = nick.GetNick();
-			replace["{datetime}"] = CString(iso8601);
-			replace["{unixtime}"] = CString(time(NULL));
-			CString uri = expand(options["message_uri"], replace);
-
-			// POST body parameters for the request
-			CString post = "to=" + urlencode(options["username"]);
-			post += "&msg=" + urlencode(short_message);
-			post += "&label=" + urlencode(app);
-			post += "&title=" + urlencode(title);
-			post += "&uri=" + urlencode(uri);
-
-			// Request headers and POST body
-			CString request = "POST " + notifo_url + " HTTP/1.1" + crlf;
-			request += "Host: " + notifo_host + crlf;
-			request += "Content-Type: application/x-www-form-urlencoded" + crlf;
-			request += "Content-Length: " + CString(post.length()) + crlf;
-			request += "User-Agent: " + user_agent + crlf;
-			request += "Authorization: Basic " + notifo_auth + crlf;
-			request += crlf;
-			request += post + crlf;
-
-			// Create the socket connection, write to it, and add it to the queue
-			CSocket *sock = new CSocket(this);
-			sock->Connect(notifo_host, 443, true);
-			sock->Write(request);
-			sock->Close(Csock::CLT_AFTERWRITE);
-			AddSocket(sock);
+			CString cmd = "znc-notify-cmd.sh " + message;
+			int r = system(cmd.c_str());
+			if (r != 0) {
+				printf("Failure\n");
+			}
 		}
 
 		/**
@@ -586,8 +537,6 @@ class CNotifoMod : public CModule
 				}
 			}
 
-			authencode();
-
 			return true;
 		}
 
@@ -794,7 +743,6 @@ class CNotifoMod : public CModule
 					options[option].Trim();
 					SetNV(option, options[option]);
 
-					authencode();
 				}
 			}
 			// APPEND command
@@ -820,7 +768,6 @@ class CNotifoMod : public CModule
 					options[option].Trim();
 					SetNV(option, options[option]);
 
-					authencode();
 				}
 			}
 			// PREPEND command
@@ -846,7 +793,6 @@ class CNotifoMod : public CModule
 					options[option].Trim();
 					SetNV(option, options[option]);
 
-					authencode();
 				}
 			}
 			// UNSET command
@@ -870,7 +816,6 @@ class CNotifoMod : public CModule
 					options[option] = defaults[option];
 					DelNV(option);
 
-					authencode();
 				}
 			}
 			// GET command

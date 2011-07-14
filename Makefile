@@ -1,3 +1,3 @@
-notifo.so: notifo.cpp
-	znc-buildmod notifo.cpp
+cmdnotify.so: cmdnotify.cpp
+	znc-buildmod cmdnotify.cpp
 

@@ -938,7 +938,7 @@ class CNotifoMod : public CModule
 			// HELP command
 			else if (action == "help")
 			{
-				PutModule("View the detailed documentation at https://github.com/jreese/znc-notifo/blob/master/README.md");
+				PutModule("View the detailed documentation at https://github.com/bgirard/znc-cmd-notify/blob/master/README.md");
 			}
 			// EVAL command
 			else if (action == "eval")

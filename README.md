@@ -94,6 +94,12 @@ Commands
 Configuration
 -------------
 
+### Settings
+
+*   `cmd = "/home/user/znc_notify.sh"`
+
+    The command to run when a notification is triggered. Defaults to `/etc/znc_notify.sh`.
+
 ### Conditions
 
 *   `away_only = "no"`

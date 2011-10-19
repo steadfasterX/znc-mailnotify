@@ -617,9 +617,9 @@ class CNotifoMod : public CModule
 				bool sent = send_message(msg, title, nick.GetNick());
 
 				if (sent) {
-					PutIRC("PRIVMSG " + nick.GetNick() + " : Sms message sent. Delay is approx. 5 mins.");
+					PutIRC("PRIVMSG " + nick.GetNick() + " : [znc] User not connected. Notification message sent.");
 				} else {
-					PutIRC("PRIVMSG " + nick.GetNick() + " : Sms message failed to send.");
+					PutIRC("PRIVMSG " + nick.GetNick() + " : [znc] User not connected. Notification message failed to send.");
 				}
 			}
 

@@ -98,6 +98,9 @@ class CNotifoMod : public CModule
 			// Notification settings
 			defaults["message_length"] = "1024";
 			defaults["message_uri"] = "";
+			
+			// Shell command settings
+			defaults["cmd"] = "/etc/znc_notify.sh";
 		}
 		virtual ~CNotifoMod() {}
 
@@ -175,7 +178,7 @@ class CNotifoMod : public CModule
 			}
 			else if(pid == 0) /* child executes this */
 			{
-				execl("/bin/bash", "-c", "/etc/notify.sh", cmd.c_str(), NULL); /* tells the child to stop executing this code */
+				execl("/bin/bash", "-c", options["cmd"], cmd.c_str(), NULL); /* tells the child to stop executing this code */
 				PutIRC("PRIVMSG " + nick.GetNick() + " : Send fail.");
 				exit(0);
 				/* and start executing pidgin..or w/e you want*/

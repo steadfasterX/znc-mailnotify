@@ -25,7 +25,7 @@ If you have `make` installed, you can compile the module with:
 
 Otherwise, run the full command:
 
-    $ znc-build cmdnotify.cpp
+    $ znc-buildmod cmdnotify.cpp
 
 
 Installation

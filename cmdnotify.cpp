@@ -319,7 +319,7 @@ class CNotifoMod : public CModule
 			CString value = options["away_only"].AsLower();
 			return value != "yes" || user->IsIRCAway();
 #else
-			return true
+			return true;
 #endif
 		}
 

@@ -31,7 +31,7 @@ Otherwise, run the full command:
 Installation
 ------------
 
-Create the notify script at /etc/notify.sh that takes
+Create the notify script at /etc/znc_notify.sh that takes
 in a message as parameters. Example:
 
     #!/bin/bash

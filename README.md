@@ -106,9 +106,6 @@ Configuration
 
     If set to "yes", notifications will only be sent if the user has set their `/away` status.
 
-    This condition requires version 0.090 of ZNC to operate, and will be disabled when
-    compiled against older versions.
-
 *   `client_count_less_than = 1`
 
     Notifications will only be sent if the number of connected IRC clients is less than this

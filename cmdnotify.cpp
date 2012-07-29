@@ -21,13 +21,8 @@
 using std::map;
 using std::string;
 
-#if (!defined(VERSION_MAJOR) || !defined(VERSION_MINOR) || (VERSION_MAJOR == 0 && VERSION_MINOR < 72))
-#error This module needs ZNC 0.072 or newer.
-#endif
-
-// Handle versions of ZNC older than 0.090 by disabling the away_only condition
-#if VERSION_MAJOR == 0 && VERSION_MINOR >= 90
-#define NOTIFO_AWAY
+#if (!defined(VERSION_MAJOR) || !defined(VERSION_MINOR) || (VERSION_MAJOR == 0 && VERSION_MINOR < 207))
+#error This module needs ZNC 0.207 or newer.
 #endif
 
 // Debug output
@@ -95,9 +90,7 @@ class CNotifoMod : public CModule
 			defaults["query_conditions"] = "all";
 
 			// Notification conditions
-#ifdef NOTIFO_AWAY
 			defaults["away_only"] = "no";
-#endif
 			defaults["client_count_less_than"] = "1";
 			defaults["highlight"] = "benwa";
 			defaults["idle"] = "0";
@@ -329,12 +322,8 @@ class CNotifoMod : public CModule
 		 */
 		bool away_only()
 		{
-#ifdef NOTIFO_AWAY
 			CString value = options["away_only"].AsLower();
 			return value != "yes" || network->IsIRCAway();
-#else
-			return true;
-#endif
 		}
 
 		/**
@@ -889,11 +878,9 @@ class CNotifoMod : public CModule
 				table.AddColumn("Condition");
 				table.AddColumn("Status");
 
-#ifdef NOTIFO_AWAY
 				table.AddRow();
 				table.SetCell("Condition", "away");
 				table.SetCell("Status", network->IsIRCAway() ? "yes" : "no");
-#endif
 
 				table.AddRow();
 				table.SetCell("Condition", "client_count");

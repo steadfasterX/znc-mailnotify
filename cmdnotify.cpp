@@ -8,11 +8,18 @@
  * Licensed under the MIT license
  */
 
+#include <map>
+#include <string>
+
 #include "znc.h"
 #include "Chan.h"
 #include "User.h"
+#include "IRCNetwork.h"
 #include "Modules.h"
 #include "time.h"
+
+using std::map;
+using std::string;
 
 #if (!defined(VERSION_MAJOR) || !defined(VERSION_MINOR) || (VERSION_MAJOR == 0 && VERSION_MINOR < 72))
 #error This module needs ZNC 0.072 or newer.
@@ -59,6 +66,9 @@ class CNotifoMod : public CModule
 		// User object
 		CUser *user;
 
+		// Network object
+		CIRCNetwork *network;
+
 		// Configuration options
 		MCString options;
 		MCString defaults;
@@ -74,6 +84,7 @@ class CNotifoMod : public CModule
 
 			// Current user
 			user = GetUser();
+			network = GetNetwork();
 
 			// Notifo user account and secret
 			defaults["username"] = "";
@@ -320,7 +331,7 @@ class CNotifoMod : public CModule
 		{
 #ifdef NOTIFO_AWAY
 			CString value = options["away_only"].AsLower();
-			return value != "yes" || user->IsIRCAway();
+			return value != "yes" || network->IsIRCAway();
 #else
 			return true;
 #endif
@@ -333,7 +344,7 @@ class CNotifoMod : public CModule
 		 */
 		unsigned int client_count()
 		{
-			return user->GetClients().size();
+			return network->GetClients().size();
 		}
 
 		/**
@@ -384,7 +395,7 @@ class CNotifoMod : public CModule
 				}
 			}
 
-			CNick nick = user->GetIRCNick();
+			CNick nick = network->GetIRCNick();
 
 			if (message.find(nick.GetNick()) != string::npos)
 			{
@@ -881,7 +892,7 @@ class CNotifoMod : public CModule
 #ifdef NOTIFO_AWAY
 				table.AddRow();
 				table.SetCell("Condition", "away");
-				table.SetCell("Status", user->IsIRCAway() ? "yes" : "no");
+				table.SetCell("Status", network->IsIRCAway() ? "yes" : "no");
 #endif
 
 				table.AddRow();

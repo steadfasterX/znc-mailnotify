@@ -11,11 +11,11 @@
 #include <map>
 #include <string>
 
-#include "znc.h"
-#include "Chan.h"
-#include "User.h"
-#include "IRCNetwork.h"
-#include "Modules.h"
+#include "znc/znc.h"
+#include "znc/Chan.h"
+#include "znc/User.h"
+#include "znc/IRCNetwork.h"
+#include "znc/Modules.h"
 #include "time.h"
 
 using std::map;

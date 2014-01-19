@@ -1,13 +1,11 @@
 ZNC mailnotify
 =============
 
-ZNC cmd notify  is a module for [ZNC][] that will send notifications to a command that you
-can customize to invoke any action you want (Forward email/SMS messages) for any private 
-message or channel highlight that matches a configurable set of conditions.
+ZNC mailnotify  is a module for [ZNC][] that will send notifications to a specified mailbox
+for any private message or channel highlight that matches a configurable set of conditions.
 
-This project is forked from ZNC to Notifo created by [John Reese](http://johnmreese.com).
-
-Minor edits made by Benwa.
+This project is forked from ZNC cmdnotify (https://github.com/bgirard/znc-cmd-notify) which
+is in turn forked from ZNC to Notifo created by [John Reese](http://johnmreese.com).
 
 
 Compiling
@@ -31,20 +29,15 @@ Otherwise, run the full command:
 Installation
 ------------
 
-Create the notify script at /etc/znc_notify.sh that takes
-in a message as parameters. Example:
-
-    #!/bin/bash
-    echo "$@" | mail ...@msg.telus.com
-    EOF
-    
 Copy the compiled module into your ZNC profile:
 
     $ cp cmdnotify.so ~/.znc/modules/
 
 Now, load the module in ZNC:
 
-    /msg *status loadmod cmdnotify
+    /msg *status loadmod mailnotify
+    or via the webinterface
+
 
 Commands
 --------
@@ -96,9 +89,17 @@ Configuration
 
 ### Settings
 
-*   `cmd = "/home/user/znc_notify.sh"`
+*   `email_address = ""`
 
-    The command to run when a notification is triggered. Defaults to `/etc/znc_notify.sh`.
+    The mailbox you want to relay notifications to. You need to set this before this module can work properly
+
+*   `email_subject = "IRC Notification"`
+
+    The subject for the mail. Defaults to "IRC Notification".
+
+*   `email_header = "IRC Notification"`
+
+    The first line of the mail body. Defaults to "This message just been sent on IRC:".
 
 ### Conditions
 

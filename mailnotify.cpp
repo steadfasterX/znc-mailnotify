@@ -3,9 +3,7 @@
  *
  * Forwards a notification to a specified mailbox
  *
- * Micha LaQua <micha.laqua@gmail.com>
- *
- * Forked credits:
+ * Copyright (c) 2014 Micha LaQua <micha.laqua@gmail.com>
  * Copyright (c) 2011 John Reese
  * Licensed under the MIT license
  */
@@ -77,15 +75,11 @@ class CNotifoMod : public CModule
 			crlf = "\r\n";
 
 			idle_time = time(NULL);
-			user_agent = "ZNC To Notifo";
+			user_agent = "ZNC Mailnotify";
 
 			// Current user
 			user = GetUser();
 			network = GetNetwork();
-
-			// Notifo user account and secret
-			defaults["username"] = "";
-			defaults["secret"] = "";
 
 			// Condition strings
 			defaults["channel_conditions"] = "all";
@@ -103,7 +97,6 @@ class CNotifoMod : public CModule
 
 			// Notification settings
 			defaults["message_length"] = "1024";
-			defaults["message_uri"] = "";
 
 			// Mail defaults
 			defaults["email_address"] = "";
@@ -189,7 +182,6 @@ class CNotifoMod : public CModule
 			else if(pid == 0) /* child executes this */
 			{
 				// execute mailcommand
-				//execl("/bin/bash", "-c", mailcmd, options["email_subject"].c_str(), options["email_header"].c_str(), message.c_str(), options["email_address"].c_str(), NULL);
 				execl("/bin/bash", "bash", "-c", cmd.c_str(), NULL);
 				exit(0);
 			}
@@ -960,4 +952,4 @@ class CNotifoMod : public CModule
 		}
 };
 
-MODULEDEFS(CNotifoMod, "Send highlights and personal messages to a Notifo account")
+MODULEDEFS(CNotifoMod, "Send highlights to a specified mailbox")

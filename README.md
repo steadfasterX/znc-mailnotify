@@ -1,4 +1,4 @@
-ZNC cmd notify
+ZNC mailnotify
 =============
 
 ZNC cmd notify  is a module for [ZNC][] that will send notifications to a command that you
@@ -25,7 +25,7 @@ If you have `make` installed, you can compile the module with:
 
 Otherwise, run the full command:
 
-    $ znc-buildmod cmdnotify.cpp
+    $ znc-buildmod mailnotify.cpp
 
 
 Installation

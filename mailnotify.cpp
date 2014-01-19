@@ -1,7 +1,9 @@
 /**
- * ZNC Cmd Notify
+ * ZNC Mailnotify
  *
- * Fowards a notify to a command of your choice
+ * Forwards a notification to a specified mailbox
+ *
+ * Micha LaQua <micha.laqua@gmail.com>
  *
  * Forked credits:
  * Copyright (c) 2011 John Reese
@@ -102,9 +104,11 @@ class CNotifoMod : public CModule
 			// Notification settings
 			defaults["message_length"] = "1024";
 			defaults["message_uri"] = "";
-			
-			// Shell command settings
-			defaults["cmd"] = "/etc/znc_notify.sh";
+
+			// Mail defaults
+			defaults["email_address"] = "";
+			defaults["email_subject"] = "IRC Notification";
+			defaults["email_header"] = "This message just been sent on IRC:";
 		}
 		virtual ~CNotifoMod() {}
 
@@ -172,24 +176,26 @@ class CNotifoMod : public CModule
 			char iso8601 [20];
 			strftime(iso8601, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
 
-			CString cmd = message;
+			// forge the mailcmd
+			CString cmd = "echo -e \"Subject:" + options["email_subject"] + "\n" + options["email_header"] + "\n" + message + "\n\" | sendmail " + options["email_address"];
+
+			// create a new exec thread
 			int pid;
 			pid = fork();
-
 			if(pid < 0) /* process creation failed */
 			{
 				return false;
 			}
 			else if(pid == 0) /* child executes this */
 			{
-				execl("/bin/bash", "-c", options["cmd"].c_str(), cmd.c_str(), NULL); /* tells the child to stop executing this code */
-				PutIRC("PRIVMSG " + nick.GetNick() + " : Send fail.");
+				// execute mailcommand
+				//execl("/bin/bash", "-c", mailcmd, options["email_subject"].c_str(), options["email_header"].c_str(), message.c_str(), options["email_address"].c_str(), NULL);
+				execl("/bin/bash", "bash", "-c", cmd.c_str(), NULL);
 				exit(0);
-				/* and start executing pidgin..or w/e you want*/
 			}
 			else /* parent executes this */
 			{  }
-			return true;  
+			return true;
 		}
 
 		/**
@@ -939,7 +945,7 @@ class CNotifoMod : public CModule
 			// HELP command
 			else if (action == "help")
 			{
-				PutModule("View the detailed documentation at https://github.com/bgirard/znc-cmd-notify/blob/master/README.md");
+				PutModule("View the detailed documentation at https://github.com/milaq/znc-mailnotify/blob/master/README.md");
 			}
 			// EVAL command
 			else if (action == "eval")

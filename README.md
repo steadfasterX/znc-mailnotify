@@ -36,8 +36,11 @@ Copy the compiled module into your ZNC profile:
 Now, load the module in ZNC:
 
     /msg *status loadmod mailnotify
-    or via the webinterface
 
+or via the webinterface.
+
+Set your email address (`email_address`) and the highlight (`highlight`)
+via `/msg *mailnotify set [...]`
 
 Commands
 --------

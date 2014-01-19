@@ -88,7 +88,7 @@ class CNotifoMod : public CModule
 			// Notification conditions
 			defaults["away_only"] = "no";
 			defaults["client_count_less_than"] = "1";
-			defaults["highlight"] = "benwa";
+			defaults["highlight"] = "";
 			defaults["idle"] = "0";
 			defaults["last_active"] = "0";
 			defaults["last_notification"] = "0";

@@ -42,6 +42,16 @@ or via the webinterface.
 Set your email address (`email_address`) and the highlight (`highlight`)
 via `/msg *mailnotify set [...]`
 
+I recommend to use **ssmtp** as a very simple and usable MTA!
+
+Arch Linux:
+`pacman -S ssmtp`
+
+*buntu, Debian:
+`apt-get install ssmtp`
+
+Configure it by editing `/etc/ssmtp.conf`
+
 Commands
 --------
 
@@ -91,6 +101,10 @@ Configuration
 -------------
 
 ### Settings
+
+*   `from_address = ""`
+
+    The mailbox you want to display and use as your FROM address. Default will be znc@yourhostname
 
 *   `email_address = ""`
 

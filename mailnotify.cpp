@@ -99,7 +99,7 @@ class CNotifoMod : public CModule
 			defaults["message_length"] = "1024";
 
 			// Mail defaults
- 			defaults["from_address"] = "znc@$(hostname -f)";
+ 			defaults["from_address"] = "";
 			defaults["email_address"] = "";
 			defaults["email_subject"] = "IRC Notification";
 			defaults["email_header"] = "This message just been sent on IRC:";

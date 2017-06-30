@@ -122,9 +122,9 @@ Configuration
 
 ### Settings
 
-*   `from_address = "znc@yourhostname"`
+*   `from_address = ""`
 
-    The mailbox you want to display and use as your FROM address. Default will be znc@yourhostname
+    The mailbox you want to display and use as your FROM address. Default is emtpy. You have to set this before the module can work properly
 
 *   `email_address = ""`
 

@@ -26,6 +26,19 @@ Otherwise, run the full command:
     $ znc-buildmod mailnotify.cpp
 
 
+Requirements
+------------
+
+You need **mailx** when you want to use this module.
+Any of the variants around should work - I use it with the one coming with mailutils but as long as the syntax is the same all should be working.
+
+mailx have to provide these parameters in order to make this module work for you:
+
+* -a : appends a custom email header (needed for the FROM address). it is used by the *from_address* option of this module
+
+* -s : sets a subject
+
+
 Installation
 ------------
 
@@ -42,15 +55,22 @@ or via the webinterface.
 Set your email address (`email_address`) and the highlight (`highlight`)
 via `/msg *mailnotify set [...]`
 
-I recommend to use **ssmtp** as a very simple and usable MTA!
 
-Arch Linux:
+Mail MTA
+--------
+
+I recommend to use **ssmtp** as it is a very simple and usable MTA!
+
+* Arch Linux:
+
 `pacman -S ssmtp`
 
-*buntu, Debian:
+* *buntu, Debian:
+
 `apt-get install ssmtp`
 
-Configure it by editing `/etc/ssmtp.conf`
+Configure it by editing: `/etc/ssmtp.conf`
+
 
 Commands
 --------
@@ -102,7 +122,7 @@ Configuration
 
 ### Settings
 
-*   `from_address = ""`
+*   `from_address = "znc@yourhostname"`
 
     The mailbox you want to display and use as your FROM address. Default will be znc@yourhostname
 

@@ -613,13 +613,7 @@ class CNotifoMod : public CModule
 				CString msg = "From " + nick.GetNick();
 				msg += ": " + message;
 
-				bool sent = send_message(msg, title, nick.GetNick());
-                                /*
-				if (sent) {
-					PutIRC("PRIVMSG " + nick.GetNick() + " : [znc] User not connected. Notification message sent.");
-				} else {
-					PutIRC("PRIVMSG " + nick.GetNick() + " : [znc] User not connected. Notification message failed to send.");
-				}*/
+				send_message(msg, title, nick.GetNick());
 			}
 
 			return CONTINUE;
